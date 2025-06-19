@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Swagger UI</title>
-  <link rel="stylesheet" href="swagger-ui.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Swagger UI</title>
+    <link rel="stylesheet" href="swagger-ui.css" />
 </head>
 
 <script type="application/json" id="swagger-spec">
@@ -28,7 +28,7 @@
     ],
     "servers": [
         {
-            "url": "https://challenge.test.local/challenge/api/v1"
+            "url": "http://localhost:8080/challenge/api/v1/"
         }
     ],
     "components": {
@@ -566,28 +566,28 @@
 </script>
 
 <body>
-  <div id="swagger-ui"></div>
-  <script src="swagger-ui-bundle.js"></script>
-  <script src="swagger-ui-standalone-preset.js"></script>
-  <script>
-    window.onload = function () {
-      const spec = document.getElementById('swagger-spec').textContent;
-      const ui = SwaggerUIBundle({
-        spec: JSON.parse(spec),
-        dom_id: '#swagger-ui',
-        deepLinking: true,
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ],
-        plugins: [
-          SwaggerUIBundle.plugins.DownloadUrl
-        ],
-        layout: "StandaloneLayout"
-      })
-      window.ui = ui
-    }
-  </script>
+    <div id="swagger-ui"></div>
+    <script src="swagger-ui-bundle.js"></script>
+    <script src="swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function () {
+            const spec = document.getElementById('swagger-spec').textContent;
+            const ui = SwaggerUIBundle({
+                spec: JSON.parse(spec),
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout"
+            })
+            window.ui = ui
+        }
+    </script>
 </body>
 
 </html>

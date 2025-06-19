@@ -1,25 +1,72 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('login', () => { 
+    
+    const username = Cypress.env("email")
+    const password = Cypress.env("password")
+    cy.intercept("POST", "**/login", {fixture: 'loginSuccess.json'})
+    cy.request({
+        method: "POST",
+        url: "https://challenge.test.local/challenge/api/v1/user/login",
+        headers: {
+        "X-Service-Id": "UserService" 
+        },
+        body: {
+            username: username,
+            password: password
+        }
+    }).then((response) => {
+        cy.wrap(response.body.token).as('accessToken')
+        cy.wrap(response.body.userId).as('userId')
+    })
+    cy.intercept("GET", "**/user/info", {fixture: 'userInfo.json'}),
+    cy.get("@userId").then((userId) => {
+    cy.request({
+        method: "GET",
+        url: `https://challenge.test.local/challenge/api/v1/user/info/${userId}`
+    }).then((response) => {
+        cy.wrap(response.body.wallet.Id).as('walletId')
+    })
+    })
+  })
+
+Cypress.Commands.add('creditRequest', () => {
+    cy.get("@walletId").then((walletId) => {
+        cy.get("@accessToken").then((accessToken) => {
+            cy.request({
+                method: "POST",
+                url: `https://challenge.test.local/challenge/api/v1/wallet/${walletId}/transaction`,
+                headers: {"Bearer": accessToken},
+                body: {fixture: "creditBody.json"}
+    })
+        })
+    
+    })  
+})
+
+Cypress.Commands.add('debitRequest', () => {
+    cy.get("@walletId").then((walletId) => {
+        cy.get("@accessToken").then((accessToken) => {
+            cy.request({
+                method: "POST",
+                url: `https://challenge.test.local/challenge/api/v1/wallet/${walletId}/transaction`,
+                headers: {"Bearer": accessToken},
+                body: {fixture: "debitBody.json"}
+    })
+        })
+    
+    })  
+})
+
+Cypress.Commands.add('getWalletInfo', () => {
+    cy.get("@walletId").then((walletId) => {
+        cy.get("@accessToken").then((accessToken) => {
+            cy.request({
+                method: "GET",
+                url: `https://challenge.test.local/challenge/api/v1/wallet/${walletId}`,
+                headers: {"Bearer": accessToken},
+    })
+        })
+    
+    })  
+})
+
+       
